@@ -21,7 +21,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: deps-anything
+          artifacts: "*.txt"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: auto-deps
           commit: main
