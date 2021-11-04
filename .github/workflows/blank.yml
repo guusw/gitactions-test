@@ -43,6 +43,7 @@ jobs:
           path: artifacts
       - name: Compress artifacts
         run: |
+          chmod +x compress
           find artifacts -maxdepth 1 ! -path artifacts -type d -exec ./compress {} \;
       - uses: ncipollo/release-action@v1
         with:
