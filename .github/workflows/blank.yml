@@ -10,17 +10,18 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run script
         run: |
-          echo Hello, world! > file.txt
+          echo Hello, world! > file0.txt
+          echo Hello, world! > file1.txt
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: deps-anything
-          path: .
+          path: "*.txt"
           if-no-files-found: error
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "*.zip"
+          artifacts: deps-anything
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: auto-deps
           commit: main
