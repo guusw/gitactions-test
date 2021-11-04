@@ -46,6 +46,7 @@ jobs:
           chmod +x compress
           scriptPath=`pwd`/compress
           cd artifacts
+          cat $scriptPath
           find . -maxdepth 1 ! -path . -type d -exec $scriptPath '{}' \;
       - uses: ncipollo/release-action@v1
         with:
