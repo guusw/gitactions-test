@@ -44,11 +44,13 @@ jobs:
       - name: Compress artifacts
         run: |
           chmod +x compress
-          find artifacts -maxdepth 1 ! -path artifacts -type d -exec ./compress {} \;
+          scriptPath=`pwd`/compress
+          cd artifacts
+          find . -maxdepth 1 ! -path . -type d -exec $scriptPath '{}' \;
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "*.tar.gz"
+          artifacts: "artifacts/*.tar.gz"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: auto-deps
           commit: main
