@@ -4,7 +4,7 @@ on:
   pull_request:
   workflow_dispatch:
 jobs:
-  build:
+  build1:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,13 +15,35 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: deps-anything
+          name: deps-one
           path: "*.txt"
           if-no-files-found: error
+  build2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run script
+        run: |
+          echo Hello, world! > file0-alternative.txt
+          echo Hello, world! > file1-alternative.txt
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: deps-two
+          path: "*.txt"
+          if-no-files-found: error
+  make-release:
+    runs-on: ubuntu-latest
+    needs: [ build1, build2 ] 
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact
+        with:
+          path: artifacts
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "*.txt"
+          artifacts: artifacts/*
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: auto-deps
           commit: main
