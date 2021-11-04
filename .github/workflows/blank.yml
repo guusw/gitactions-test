@@ -10,8 +10,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run script
         run: |
-          echo Hello, world! & updated > file0.txt
-          echo Hello, world! > file1.txt
+          echo "Hello, world! & updated" > file0.txt
+          echo "Hello, world!" > file1.txt
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -24,8 +24,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run script
         run: |
-          echo Hello, world! > file0-alternative.txt
-          echo Hello, world! > file1-alternative.txt
+          echo "Hello, world!" > file0-alternative.txt
+          echo "Hello, world!" > file1-alternative.txt
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
