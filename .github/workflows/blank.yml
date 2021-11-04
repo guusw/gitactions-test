@@ -40,10 +40,15 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: artifacts
+      - name: Run script
+        run: |
+          ls artifacts
+          ls artifacts/deps-one
+          ls artifacts/deps-two
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: artifacts/*/*.zip
+          artifacts: artifacts/**/*.zip
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: auto-deps
           commit: main
