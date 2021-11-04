@@ -48,6 +48,7 @@ jobs:
           cd artifacts
           cat $scriptPath
           find . -maxdepth 1 ! -path . -type d -exec $scriptPath '{}' \;
+          find . -maxdepth 1 ! -path . -type d -exec cat $scriptPath \;
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
