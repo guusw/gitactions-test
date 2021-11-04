@@ -47,8 +47,8 @@ jobs:
           scriptPath=`pwd`/compress
           cd artifacts
           cat $scriptPath
-          find . -maxdepth 1 ! -path . -type d -exec $scriptPath '{}' \;
-          find . -maxdepth 1 ! -path . -type d -exec cat $scriptPath \;
+          # find . -maxdepth 1 ! -path . -type d -exec $scriptPath '{}' \;
+          find . -maxdepth 1 ! -path . -type d -exec tar -czvf {}.tar.gz {} \;
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
