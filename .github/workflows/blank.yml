@@ -1,0 +1,26 @@
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run script
+        run: |
+          echo Hello, world! > file.txt
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: deps-anything
+          path: .
+          if-no-files-found: error
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "*.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: auto-deps
+          commit: main
