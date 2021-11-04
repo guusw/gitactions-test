@@ -1,0 +1,4 @@
+#!/bin/bash
+Path=$1
+BaseName=$(basename $Path)
+tar -czvf $BaseName.tar.gz $Path
