@@ -42,8 +42,6 @@ jobs:
           path: artifacts
       - name: Compress artifacts
         run: |
-          chmod +x compress
-          scriptPath=`pwd`/compress
           cd artifacts
           find . -maxdepth 1 ! -path . -type d -exec tar --strip-components 1 -czvf {}.tar.gz {} \;
       - uses: ncipollo/release-action@v1
