@@ -1,0 +1,28 @@
+name: "upload-release-artifact"
+description: ""
+inputs:
+  path:
+    description: "Path the the folder containing the files to archive and upload"
+    required: true
+    default: ""
+  name:
+    description: "base name for the archive and the release"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        rm -rf ${{inputs.name}}.tar.gz
+        tar --strip-components 1 -czvf ${{inputs.name}}.tar.gz -C ${{inputs.path}} .
+    - uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        artifacts: "${{inputs.name}}.tar.gz"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: auto-deps-${{inputs.name}}
+        commit: main
+    - shell: bash
+      run: |
+        git tag -f auto-deps-${{inputs.name}}
+        git push --force origin auto-deps-${{inputs.name}}
