@@ -21,7 +21,7 @@ jobs:
           echo "Hello, world!" > build/ignored-file.txt
           echo "Hello, world!" > ignored-file-in-root.txt
       - name: Make Release
-        uses: .github/actions/upload-release-artifact
+        uses: ./.github/actions/upload-release-artifact
         with:
           path: build/random-name/a
           name: "target1"
@@ -35,7 +35,7 @@ jobs:
           echo "Hello, world!" > build/stuff/file0-alternative.txt
           echo "Hello, world!" > build/stuff/file1-alternative.txt
       - name: Make Release
-        uses: .github/actions/upload-release-artifact
+        uses: ./.github/actions/upload-release-artifact
         with:
           path: build/stuff
           name: "target2"
