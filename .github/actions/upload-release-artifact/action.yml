@@ -8,6 +8,9 @@ inputs:
   name:
     description: "base name for the archive and the release"
     required: true
+  token:
+    description: "Github token, passed from ${{secrets.GITHUB_TOKEN}}"
+    required: true
 runs:
   using: "composite"
   steps:
@@ -15,13 +18,13 @@ runs:
       run: |
         rm -rf ${{inputs.name}}.tar.gz
         tar --xform s:'./':: -czvf ${{inputs.name}}.tar.gz -C ${{inputs.path}} .
-    # - uses: ncipollo/release-action@v1
-    #   with:
-    #     allowUpdates: true
-    #     artifacts: "${{inputs.name}}.tar.gz"
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     tag: auto-deps-${{inputs.name}}
-    #     commit: main
+    - uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        artifacts: "${{inputs.name}}.tar.gz"
+        tag: auto-deps-${{inputs.name}}
+        commit: main
+        token: ${{inputs.token}}
     - shell: bash
       run: |
         git tag -f auto-deps-${{inputs.name}}
