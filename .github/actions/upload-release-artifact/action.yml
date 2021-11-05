@@ -14,7 +14,7 @@ runs:
     - shell: bash
       run: |
         rm -rf ${{inputs.name}}.tar.gz
-        tar --strip-components 1 -czvf ${{inputs.name}}.tar.gz -C ${{inputs.path}} .
+        tar --xform s:'./':: -czvf ${{inputs.name}}.tar.gz -C ${{inputs.path}} .
     # - uses: ncipollo/release-action@v1
     #   with:
     #     allowUpdates: true
