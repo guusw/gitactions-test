@@ -1,6 +1,8 @@
 name: CI
 on:
   push:
+    tags-ignore:
+      - "auto-deps"
   pull_request:
   workflow_dispatch:
 jobs:
@@ -51,3 +53,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: auto-deps
           commit: main
+      - name: Update auto-deps tag
+        run: |
+          git tag -f auto-deps
+          git push --force origin auto-deps
