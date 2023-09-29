@@ -9,16 +9,11 @@ on:
   pull_request:
   workflow_dispatch:
 jobs:
-  pr_commented:
+  pre-check:
     # This job only runs for pull request comments
     name: Test PR trigger
-    if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo A comment on PR $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
       - name: View context attributes
         uses: actions/github-script@v6
         with:
