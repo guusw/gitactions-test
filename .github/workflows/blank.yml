@@ -44,8 +44,8 @@ jobs:
               against_branch: against_branch
             };
   build1:
+    needs: pre-check
     runs-on: ubuntu-latest
-    depends-on: pre-check
     steps:
       - uses: actions/checkout@v2
       - name: Run script
