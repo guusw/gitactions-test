@@ -55,6 +55,14 @@ jobs:
               const tagsB = JSON.stringify(parseTags(pr.body));
               if(tagsA != tagsB) {
                 console.log("Tag changes detected", tagsA, "=>", tagsB);
-                await rerequestRun();
+                var hasSkipRun = false;
+                for(const match of tagsB) {
+                  if(match[1] == "noci") {
+                    hasSkipRun = true;
+                    break;
+                  }
+                }
+                if(!hasSkipRun)
+                  await rerequestRun();
               }
             }
