@@ -9,36 +9,24 @@ on:
   pull_request:
   workflow_dispatch:
 jobs:
+  pr_commented:
+    # This job only runs for pull request comments
+    name: PR comment
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo A comment on PR $NUMBER
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+      - name: View context attributes
+        uses: actions/github-script@v6
+        with:
+          script: console.log(context)
   build1:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Run script
         run: |
-          mkdir -p build/random-name/a
-          echo "Hello, world! & updated" > build/random-name/a/file0.txt
-          echo "Hello, world!" > build/random-name/a/file1.txt
-          echo "Hello, world!" > build/ignored-file.txt
-          echo "Hello, world!" > ignored-file-in-root.txt
-      - name: Make Release
-        uses: ./.github/actions/upload-release-artifact
-        if: false
-        with:
-          path: build/random-name/a
-          name: "target1"
-          token: ${{secrets.GITHUB_TOKEN}}
-  build2:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run script
-        run: |
-          mkdir -p build/stuff
-          echo "Hello, world!" > build/stuff/file0-alternative.txt
-          echo "Hello, world!" > build/stuff/file1-alternative.txt
-      - name: Make Release
-        uses: ./.github/actions/upload-release-artifact
-        with:
-          path: build/stuff
-          name: "target2"
-          token: ${{secrets.GITHUB_TOKEN}}
+          echo "Running actions"
