@@ -42,11 +42,13 @@ jobs:
                 }
               }
             }
-            console.log(context);
-            return {
+            // console.log(context);
+            let ret = {
               run_ci: run_ci,
               against_branch: against_branch
             };
+            console.log("Returning", ret);
+            return ret;
   build1:
     needs: pre-check
     runs-on: ubuntu-latest
