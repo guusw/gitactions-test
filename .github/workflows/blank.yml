@@ -22,20 +22,20 @@ jobs:
             var against_branch = "devel";
 
             var pr = context.payload.pull_request;
-            console.log("Pull request", pr);
+            # console.log("Pull request", pr);
             if (pr != null) {
-              console.log("Pull request number: " + pr.number);
-              const result = await github.request(pr.issue_url);
-              let pr_body = result.body;
-              const regexp = /!(\w+)(=\w+)?/g;
-              const tag_matches = [...pr_body.matchAll(regexp)];
-              for (const match of tag_matches) {
-                console.log(`Found tag: ${match[1]} = ${match[2]}`);
-                if (match[1] == "noci") {
-                  run_ci = false;
-                  break;
-                } else if (match[1] == "against") {
-                  against_branch = match[2];
+              let pr_body = pr.body;
+              if(pr_body != null) {
+                const regexp = /!(\w+)(=\w+)?/g;
+                const tag_matches = [...pr_body.matchAll(regexp)];
+                for (const match of tag_matches) {
+                  console.log(`Found tag: ${match[1]} = ${match[2]}`);
+                  if (match[1] == "noci") {
+                    run_ci = false;
+                    break;
+                  } else if (match[1] == "against") {
+                    against_branch = match[2];
+                  }
                 }
               }
             }
