@@ -18,7 +18,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            var pr = context.pull_request;
+            var pr = context.payload.pull_request;
             console.log("Pull request", pr);
             if(pr != null) {
               console.log("Pull request number: " + pr.number);
