@@ -1,7 +1,10 @@
-name: CI
+name: Watch PR edits
 on:
   pull_request:
     types: [edited]
+  push:
+    branches:
+      - "test2"
 jobs:
   pr-edit-check:
     # This job only runs for pull request comments
@@ -12,27 +15,66 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            var run_ci = true;
-            var against_branch = "devel";
-
-            var pr = context.payload.pull_request;
-            // console.log("PR", pr != null, pr != undefined);
-            // console.log("PR Body", pr.body != null, pr.body != undefined);
-            if (pr) {
-              let pr_body = pr.body;
-              console.log("PR Body", pr_body);
-              if(pr_body) {
-                const regexp = /!(\w+)(=\w+)?/g;
-                const tag_matches = [...pr_body.matchAll(regexp)];
-                for (const match of tag_matches) {
-                  console.log(`Found tag: ${match[1]} = ${match[2]}`);
-                  if (match[1] == "noci") {
-                    run_ci = false;
-                    break;
-                  } else if (match[1] == "against") {
-                    against_branch = match[2];
-                  }
-                }
-              }
+            function parseTags(text) {
+              const regexp = /!(\w+)(=[^\s]+)?/g;
+              const tagMatches = [...text.matchAll(regexp)];
+              return tagMatches;
             }
-            console.log(context);
+
+            async function rerequestRun() {
+              const pr = context.payload.pull_request;
+              const pullNumber = pr ? pr.number : 4;
+              const repository = context.payload.repository;
+              console.log("Owner", repository.owner);
+
+              const pr1 = await github.rest.pulls.get({
+                owner: repository.owner.login,
+                repo: repository.name,
+                pull_number: pullNumber,
+              });
+              console.log("PR", pr1);
+              const head = pr1.data.head;
+              console.log("HEAD", head);
+
+              let runs = await github.rest.actions.listWorkflowRuns({
+                owner: repository.owner.login,
+                repo: repository.name,
+                workflow_id: "blank.yml",
+                branch: head.ref,
+              });
+
+              let actualRuns = runs.data.workflow_runs;
+              if(actualRuns.length > 0) {
+                console.log("First run", actualRuns[0]);
+                let id = actualRuns[0].id;
+                console.log("id", id);
+                await github.rest.actions.reRunWorkflow({
+                  owner: repository.owner.login,
+                  repo: repository.name,
+                  run_id: id,
+                });
+              }
+              // if(actualRuns.length > 1) {
+              //   console.log("Last run", actualRuns[actualRuns.length - 1]);
+              // }
+            }
+
+            await rerequestRun();
+
+            // const pr = context.payload.pull_request;
+            // const changes = context.payload.changes;
+            // if(changes.body) {
+            //   const tagsA = JSON.stringify(parseTags(changes.body.from));
+            //   const tagsB = JSON.stringify(parseTags(pr.body));
+            //   if(tagsA != tagsB || true) {
+            //     console.log("Tag changes detected", tagsA, "=>", tagsB);
+            //     // await github.actions.reRunWorkflow('POST /repos/{owner}/{repo}/actions/jobs/{job_id}/rerun', {
+            //     //   owner: repository.owner,
+            //     //   repo: repository.name,
+            //     //   job_id: 'JOB_ID',
+            //     //   headers: {
+            //     //     'X-GitHub-Api-Version': '2022-11-28'
+            //     //   }
+            //     // })
+            //   }
+            // }

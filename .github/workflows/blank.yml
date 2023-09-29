@@ -12,43 +12,37 @@ on:
 jobs:
   pre-check:
     # This job only runs for pull request comments
-    name: Pre-check Script
+    name: Pre-check
     runs-on: ubuntu-latest
     steps:
-      - name: View context attributes
+      - id: pre-check
         uses: actions/github-script@v6
         with:
           script: |
-            var run_ci = true;
-            var against_branch = "devel";
+            function parseTags(text) {
+              const regexp = /!(\w+)(=[^\s]+)?/g;
+              const tagMatches = [...text.matchAll(regexp)];
+              return tagMatches;
+            }
+
+            var againstBranch = "devel";
 
             var pr = context.payload.pull_request;
-            // console.log("PR", pr != null, pr != undefined);
-            // console.log("PR Body", pr.body != null, pr.body != undefined);
-            if (pr) {
-              let pr_body = pr.body;
-              console.log("PR Body", pr_body);
-              if(pr_body) {
-                const regexp = /!(\w+)(=\w+)?/g;
-                const tag_matches = [...pr_body.matchAll(regexp)];
-                for (const match of tag_matches) {
-                  console.log(`Found tag: ${match[1]} = ${match[2]}`);
-                  if (match[1] == "noci") {
-                    run_ci = false;
-                    break;
-                  } else if (match[1] == "against") {
-                    against_branch = match[2];
-                  }
+            if (pr && pr.body) {
+              const tagMatches = parseTags(pr.body);
+              for (const match of tagMatches) {
+                console.log(`Found tag: ${match[1]} = ${match[2]}`);
+                if (match[1] == "noci") {
+                  core.setFailed("CI is disabled for this PR");
+                  break;
+                } else if (match[1] == "against") {
+                  if(match[2])
+                    againstBranch = match[2].slice(1);
                 }
               }
             }
-            // console.log(context);
-            let ret = {
-              run_ci: run_ci,
-              against_branch: against_branch
-            };
-            console.log("Returning", ret);
-            return ret;
+
+            core.setOutput("against", againstBranch);
   build1:
     needs: pre-check
     runs-on: ubuntu-latest
@@ -56,4 +50,4 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run script
         run: |
-          echo "Running actions"
+          echo "Building against branch ${{steps.pre-check.outputs.against}}"
