@@ -41,7 +41,7 @@ jobs:
                   break;
                 } else if (key == "against") {
                   if(value)
-                    againstBranch = value.slice(1);
+                    againstBranch = value;
                 }
               }
             }
