@@ -18,14 +18,32 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            var run_ci = true;
+            var against_branch = "devel";
+
             var pr = context.payload.pull_request;
             console.log("Pull request", pr);
-            if(pr != null) {
+            if (pr != null) {
               console.log("Pull request number: " + pr.number);
               const result = await github.request(pr.issue_url);
-              console.log("Issue data", result)
+              let pr_body = result.body;
+              const regexp = /!(\w+)(=\w+)?/g;
+              const tag_matches = [...str.matchAll(regexp)];
+              for (const match of tag_matches) {
+                console.log(`Found tag: ${match[1]} = ${match[2]}`);
+                if (match[1] == "noci") {
+                  run_ci = false;
+                  break;
+                } else if (match[1] == "against") {
+                  against_branch = match[2];
+                }
+              }
             }
             console.log(context);
+            return {
+              run_ci: run_ci,
+              against_branch: against_branch
+            };
   build1:
     runs-on: ubuntu-latest
     steps:
