@@ -23,10 +23,10 @@ jobs:
 
             var pr = context.payload.pull_request;
             console.log("PR", pr);
-            if (pr != null) {
+            if (pr) {
               let pr_body = pr.body;
               console.log("PR Body", pr_body);
-              if(pr_body != null) {
+              if(pr_body) {
                 const regexp = /!(\w+)(=\w+)?/g;
                 const tag_matches = [...pr_body.matchAll(regexp)];
                 for (const match of tag_matches) {
