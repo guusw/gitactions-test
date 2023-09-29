@@ -17,7 +17,13 @@ jobs:
       - name: View context attributes
         uses: actions/github-script@v6
         with:
-          script: console.log(context)
+          script: |
+            var pr = context.pull_request;
+            if(pr) {
+              console.log("Pull request number: " + pr.number);
+              const result = await github.request(pr.issue_url);
+              console.log("Issue data", result)
+            }
   build1:
     runs-on: ubuntu-latest
     steps:
