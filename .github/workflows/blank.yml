@@ -28,7 +28,7 @@ jobs:
               const result = await github.request(pr.issue_url);
               let pr_body = result.body;
               const regexp = /!(\w+)(=\w+)?/g;
-              const tag_matches = [...str.matchAll(regexp)];
+              const tag_matches = [...pr_body.matchAll(regexp)];
               for (const match of tag_matches) {
                 console.log(`Found tag: ${match[1]} = ${match[2]}`);
                 if (match[1] == "noci") {
