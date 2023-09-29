@@ -22,8 +22,10 @@ jobs:
             var against_branch = "devel";
 
             var pr = context.payload.pull_request;
+            console.log("PR", pr);
             if (pr != null) {
               let pr_body = pr.body;
+              console.log("PR Body", pr_body);
               if(pr_body != null) {
                 const regexp = /!(\w+)(=\w+)?/g;
                 const tag_matches = [...pr_body.matchAll(regexp)];
