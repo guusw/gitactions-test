@@ -1,21 +1,14 @@
 name: CI
 on:
-  push:
-    branches:
-      - "main"
-    tags-ignore:
-      - "auto-deps"
-      - "auto-deps*"
   pull_request:
-    types: [synchronize]
-  workflow_dispatch:
+    types: [edited]
 jobs:
-  pre-check:
+  pr-edit-check:
     # This job only runs for pull request comments
-    name: Pre-check Script
+    name: PR edited
     runs-on: ubuntu-latest
     steps:
-      - name: View context attributes
+      - name: Script
         uses: actions/github-script@v6
         with:
           script: |
@@ -42,18 +35,3 @@ jobs:
                 }
               }
             }
-            // console.log(context);
-            let ret = {
-              run_ci: run_ci,
-              against_branch: against_branch
-            };
-            console.log("Returning", ret);
-            return ret;
-  build1:
-    needs: pre-check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run script
-        run: |
-          echo "Running actions"
