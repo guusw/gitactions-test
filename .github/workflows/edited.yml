@@ -2,13 +2,10 @@ name: Watch PR edits
 on:
   pull_request:
     types: [edited]
-  push:
-    branches:
-      - "test2"
 jobs:
   pr-edit-check:
     # This job only runs for pull request comments
-    name: PR edited
+    name: Workflow re-run trigger
     runs-on: ubuntu-latest
     steps:
       - name: Script
