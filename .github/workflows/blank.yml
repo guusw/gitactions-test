@@ -22,7 +22,6 @@ jobs:
             var against_branch = "devel";
 
             var pr = context.payload.pull_request;
-            # console.log("Pull request", pr);
             if (pr != null) {
               let pr_body = pr.body;
               if(pr_body != null) {
