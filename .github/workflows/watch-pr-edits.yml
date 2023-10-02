@@ -25,8 +25,8 @@ jobs:
               const tagsBStr = JSON.stringify(tagsB);
               if(tagsAStr != tagsBStr) {
                 console.log("Tag changes detected", tagsAStr, "=>", tagsBStr);
-                var hasSkipRun = false;
                 if(tagsB.noci == null) {
+                  console.log("Requesting workflow rerun");
                   await lib.requestWorkflowRerun(context, github);
                 }
               }
