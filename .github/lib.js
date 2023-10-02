@@ -5,7 +5,8 @@ module.exports = {
     const list = await github.rest.pulls.list({
       owner: repository.owner.login,
       repo: repository.name,
-      head: repository.owner.login + ":" + "test2",
+      head: context.ref,
+      sort: "updated",
     });
     console.log("list", list);
   },
