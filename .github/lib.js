@@ -1,20 +1,24 @@
 module.exports = {
-  findPull: async function(context, github) {
+  findPull: async function (context, github) {
+    console.log("Finding PR based on ref", context.ref);
     const repository = context.payload.repository;
-    console.log("Context", context);
     const list = await github.rest.pulls.list({
       owner: repository.owner.login,
       repo: repository.name,
-      head: repository.owner.login + ":" + "test2",
+      head: context.ref,
+      sort: "updated",
     });
     console.log("list", list);
+    if (list.data.length > 0)
+      return list.data[0];
+    return null;
   },
   parseTags: function (text) {
     const regexp = /\B!([^\s=]+)(=[^\s]+)?/g;
     const tagMatches = [...text.matchAll(regexp)];
     return tagMatches;
   },
-  readPullTagsFromString: function(default_, str) { 
+  readPullTagsFromString: function (default_, str) {
     var result = default_;
     const tagMatches = this.parseTags(str);
     for (const match of tagMatches) {
@@ -26,15 +30,18 @@ module.exports = {
 
     return result;
   },
-  readPullTagsFromContext: function (default_, context) {
+  readPullTagsFromContext: async function (default_, context, github) {
     var pr = context.payload.pull_request;
+    if(!pr) {
+      pr = await this.findPull(context, github);
+    }
+
     if (pr && pr.body) {
       return this.readPullTagsFromString(default_, pr.body);
     } else {
       console.log("No PR found, ignoring tags");
+      return default_;
     }
-
-    return result;
   },
   requestWorkflowRerun: async function (context, github) {
     const pr = context.payload.pull_request;

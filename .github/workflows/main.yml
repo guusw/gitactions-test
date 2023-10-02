@@ -25,12 +25,12 @@ jobs:
         with:
           script: |
             const lib = require(".github/lib.js");
-            const tags = lib.readPullTagsFromContext({against: "devel"}, context);
+            const tags = await lib.readPullTagsFromContext({against: "devel"}, context, github);
             if(tags.noci != null)
               core.setFailed("CI is disabled for this PR");
             core.setOutput("against", tags.against);
 
-            const pull = lib.findPull(context, github);
+            const pull = await lib.findPull(context, github);
             console.log("Found pull", pull);
 
   build1:

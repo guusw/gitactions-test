@@ -19,14 +19,14 @@ jobs:
             const pr = context.payload.pull_request;
             const changes = context.payload.changes;
             if(changes.body) {
-              const tagsA = lib.readPullTagsFromString({}, changes.body);
+              const tagsA = lib.readPullTagsFromString({}, changes.body.from);
               const tagsAStr = JSON.stringify(tagsA);
               const tagsB = lib.readPullTagsFromString({}, pr.body);
               const tagsBStr = JSON.stringify(tagsB);
               if(tagsAStr != tagsBStr) {
                 console.log("Tag changes detected", tagsAStr, "=>", tagsBStr);
-                var hasSkipRun = false;
                 if(tagsB.noci == null) {
+                  console.log("Requesting workflow rerun");
                   await lib.requestWorkflowRerun(context, github);
                 }
               }
