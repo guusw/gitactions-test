@@ -19,7 +19,7 @@ jobs:
             const pr = context.payload.pull_request;
             const changes = context.payload.changes;
             if(changes.body) {
-              const tagsA = lib.readPullTagsFromString({}, changes.body);
+              const tagsA = lib.readPullTagsFromString({}, changes.body.from);
               const tagsAStr = JSON.stringify(tagsA);
               const tagsB = lib.readPullTagsFromString({}, pr.body);
               const tagsBStr = JSON.stringify(tagsB);
