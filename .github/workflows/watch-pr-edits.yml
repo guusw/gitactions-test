@@ -1,0 +1,33 @@
+name: Watch PR edits
+on:
+  pull_request:
+    types: [edited]
+jobs:
+  pr-edit-check:
+    name: Workflow re-run trigger
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+      - name: Script
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const lib = require(".github/lib.js");
+
+            const pr = context.payload.pull_request;
+            const changes = context.payload.changes;
+            if(changes.body) {
+              const tagsA = lib.readPullTagsFromString({}, changes.body);
+              const tagsAStr = JSON.stringify(tagsA);
+              const tagsB = lib.readPullTagsFromString({}, pr.body);
+              const tagsBStr = JSON.stringify(tagsB);
+              if(tagsAStr != tagsBStr) {
+                console.log("Tag changes detected", tagsAStr, "=>", tagsBStr);
+                var hasSkipRun = false;
+                if(tagsB.noci == null) {
+                  await lib.requestWorkflowRerun(context, github);
+                }
+              }
+            }

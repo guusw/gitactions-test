@@ -1,0 +1,43 @@
+name: Main
+on:
+  push:
+    branches:
+      - "main"
+    tags-ignore:
+      - "auto-deps"
+      - "auto-deps*"
+  pull_request:
+    types: [synchronize]
+  workflow_dispatch:
+jobs:
+  pre-check:
+    # This job only runs for pull request comments
+    name: Pre-check
+    runs-on: ubuntu-latest
+    outputs:
+      against: ${{ steps.pre-check.outputs.against }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+      - id: pre-check
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const lib = require(".github/lib.js");
+            const tags = lib.readPullTagsFromContext({against: "devel"}, context);
+            if(tags.noci != null)
+              core.setFailed("CI is disabled for this PR");
+            core.setOutput("against", tags.against);
+
+            const pull = lib.findPull(context, github);
+            console.log("Found pull", pull);
+
+  build1:
+    needs: pre-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run script
+        run: |
+          echo "Building against branch ${{needs.pre-check.outputs.against}}"
