@@ -32,9 +32,8 @@ module.exports = {
       return this.readPullTagsFromString(default_, pr.body);
     } else {
       console.log("No PR found, ignoring tags");
+      return default_;
     }
-
-    return result;
   },
   requestWorkflowRerun: async function (context, github) {
     const pr = context.payload.pull_request;
