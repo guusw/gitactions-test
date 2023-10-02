@@ -8,6 +8,7 @@ module.exports = {
       head: context.ref,
       sort: "updated",
     });
+    console.log("list", list);
     if (list.length > 0)
       return list[0];
     return null;
