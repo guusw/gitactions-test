@@ -9,8 +9,8 @@ module.exports = {
       sort: "updated",
     });
     console.log("list", list);
-    if (list.length > 0)
-      return list[0];
+    if (list.data.length > 0)
+      return list.data[0];
     return null;
   },
   parseTags: function (text) {
