@@ -2,7 +2,7 @@ module.exports = {
   findPull: async function(context, github) {
     const repository = context.payload.repository;
     console.log("Context", context);
-    const list = github.rest.pulls.list({
+    const list = await github.rest.pulls.list({
       owner: repository.owner.login,
       repo: repository.name,
       head: repository.owner.login + ":" + "test2",
